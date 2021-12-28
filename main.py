@@ -7,7 +7,6 @@ import time
 import os
 import sqlite3
 from datetime import datetime
-from dotenv import load_dotenv
 import os
 from pytube import YouTube
 import os
@@ -112,7 +111,7 @@ def index(gid):
     resp.set_cookie('ssid', id, path=f"/{gid}")
     return resp
 
-threading.Thread(target = lambda: serve(app, host='localhost', port=443)).start()
+threading.Thread(target = lambda: serve(app, host='0.0.0.0', port=443)).start()
 def getvoice(ctx):
     return discord.utils.get(client.voice_clients, guild=ctx.guild)
 async def has_ban(ctx):
@@ -431,7 +430,7 @@ def generate_music_panel(ctx):
     users_panel_web[pid] = ctx.author
     return pid
 #set variables for code
-domain="http://localhost:5000"
+domain="https://winbot.p4tkry.pl"
 users_panel_web={}
 filedir=os.getcwd()
 client = commands.Bot(command_prefix='!', intents=discord.Intents().all())
@@ -441,8 +440,6 @@ playqueue={}
 loop_bool={}
 #author id
 patkryid=444547466180689920
-
-load_dotenv()
 @client.event
 async def on_ready():
     global author
@@ -639,7 +636,7 @@ async def _set_winbot_ban_role(ctx: SlashContext, role):
 #WEB SECTION
 
 
-client.run(os.getenv("KEY"))
+client.run(os.environ['KEY'])
 
 
 
