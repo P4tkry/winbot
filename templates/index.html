@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winbot Panel</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.png') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <flexbox>
+        <div class="label">  
+            <a href="#">
+                <div class="iconbox">
+                    <img src={{ avatar_url }}, alt="dc avatar url" width="80" height="80" style="border-radius: 50%;">
+                </div>
+            </a>
+            <a href="#">
+                <div class="iconbox">
+                    <i class="material-icons icon" >list</i>
+                </div>
+            </a>
+            <a href="#">
+                <div class="iconbox">
+                    <i class="material-icons icon" >play_circle_outline</i>
+                </div>
+            </a>
+        </div>
+        <flexbox style="flex-wrap: wrap; width: 100%; justify-content: center;align-content: flex-start; ">
+            <header>
+                <h1>
+                    Hello <span style="font-weight: bold;">{{ user_name }}</span> !
+                    <span style="font-size: small;">
+                        Winbot panel
+                    </span>
+                    <span style="font-size: small; color: red;">
+                        Beta verion
+                    </span>
+                </h1>
+            </header>
+            <div class="thcon">
+                <div class="guild_data">
+                    <img src={{ guild_icon }}, alt="dc guild icon" width="80" height="80" style="border-radius: 50%;">
+                    {{ guild_name }}
+                </div>
+                <div class="thumbnail">
+                    <div class="title">
+                        <p clas="titl">
+
+                        </p>
+                    </div>
+                    <thumbnail class="thumb">
+                        <a href="#" onclick="music_control('pause');">
+                            <i class="material-icons play thic" style="font-size: 80px;">play_arrow</i>
+                        </a>
+                        <a href="#" onclick="music_control('skip');">
+                            <i class="material-icons forward thic" style="font-size: 80px;">fast_forward</i>
+                        </a>
+                        <a href="#" onclick="music_control('loop');">
+                            <i class="material-icons loop thic" style="font-size: 80px;">loop</i>
+                        </a>
+                    </thumbnail>
+                </div>
+
+            </div>
+                </div>
+        </flexbox>
+    </flexbox>
+    <script>
+        let gid="{{guild_id}}";
+        let isplaying={};
+        let music_status={
+            connected:false,
+            ispaused:false,
+            islooped:false
+        };
+        update_thumbnail()
+        function music_control(todo){
+            if(!music_status.connected){
+                return
+            }
+            $.post( `/${gid}/${todo}`,function(){})
+            update_thumbnail()
+        }
+
+        function update_thumbnail(){
+            $.get( `/${gid}/playlist`,  function( queue ) {
+                console.log(queue);
+            if(queue[0]){
+                $(".thic").removeClass("invalib_button");
+                if(JSON.stringify(isplaying)!==JSON.stringify(queue[0])){
+                    isplaying=queue[0];
+                    $("thumbnail").css("background-image",`url(${isplaying['thumbnails'][0]['url']})`);
+                    $(".title p").text(isplaying.title);
+                }
+            }else{
+                $(".thic").addClass("invalib_button");
+                $(".title p").html("<b>NO MUSIC IS PLAYING</b>");
+                $(".loop").text("loop")
+                if(!jQuery.isEmptyObject(isplaying)){
+                    $("thumbnail").css("background-image",`url(../static/no_music.png)`);
+                    isplaying={};
+                }
+            }
+        })
+
+        $.get( `/${gid}/music_status`,  function( music_data ) {
+            music_status=music_data
+            if(music_data.ispaused==true && $(".play").text()!="play_arrow"){
+                $(".play").text("play_arrow")
+            }else if(music_data.ispaused==false && $(".play").text()!="pause"){
+                $(".play").text("pause")
+            }
+            if(music_data.islooped==false && $(".loop").text()!="loop"){
+                $(".loop").text("loop")
+            }else if(music_data.islooped==true && $(".loop").text()!="roundabout_right"){
+                $(".loop").text("roundabout_right")
+            }
+            if(!music_data.connected){
+                $(".thic").addClass("invalib_button");
+            }
+        })
+
+        }
+        setInterval(function(){
+            update_thumbnail()
+        }
+        , 3000);
+
+        $( "thumbnail" ).on({
+            mouseenter: function() {
+                $("thumbnail .material-icons").css("display", "block");
+                if(!jQuery.isEmptyObject(isplaying)){
+                    $("thumbnail").css("background-image",`linear-gradient( rgba(0, 0, 0, 0.7) 100%, rgba(0, 0, 0, 0.7)100%),url(${JSON.stringify(isplaying['thumbnails'][0]['url'])})`);
+                }else{
+                    $("thumbnail").css("background-image","linear-gradient( rgba(0, 0, 0, 0.7) 100%, rgba(0, 0, 0, 0.7)100%),url(../static/no_music.png)");
+                }
+            },
+            mouseleave: function() {
+                $("thumbnail .material-icons").css("display", "none");
+                if(!jQuery.isEmptyObject(isplaying)){
+                    console.log($("thumbnail").css(['background-image']));
+                    $("thumbnail").css('background-image',`url(${isplaying['thumbnails'][0]['url']})`);
+                }else{
+                    $("thumbnail").css("background-image",`url('../static/no_music.png')`);
+                }
+            }
+        });
+    </script>
+
+</html>
