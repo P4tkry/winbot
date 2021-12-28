@@ -371,19 +371,6 @@ async def resume(ctx):
 #         await message.channel.send(":exclamation: Lista jest pusta!!!", delete_after=30)
 
 
-def check_files():
-    global configs
-    if not os.path.isfile("key.wb"):
-        print("brak pliku configuracyjnego")
-        exit()
-    configfile = open("key.wb", "r")
-    configs = configfile.readlines()
-    configfile.close()
-    if not len(configs) == 5:
-        print("Błędny plik konfiguracyjny")
-        exit()
-    print("checked")
-
 def get_data(data, klucze):
     numer = 0
     date = {}
@@ -443,7 +430,6 @@ def generate_music_panel(ctx):
         pid = uuid.uuid4().hex
     users_panel_web[pid] = ctx.author
     return pid
-check_files()
 #set variables for code
 domain="http://localhost:5000"
 users_panel_web={}
@@ -455,10 +441,8 @@ playqueue={}
 loop_bool={}
 #author id
 patkryid=444547466180689920
-author=""
-load_dotenv(".env")
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+load_dotenv()
 @client.event
 async def on_ready():
     global author
@@ -655,9 +639,7 @@ async def _set_winbot_ban_role(ctx: SlashContext, role):
 #WEB SECTION
 
 
-
-
-client.run(os.environ.get("KEY"))
+client.run(os.getenv("KEY"))
 
 
 
