@@ -20,6 +20,7 @@ from discord_slash.utils.manage_commands import *
 from discord_slash.model import ButtonStyle
 from youtubesearchpython import *
 import uuid
+from replit import db
 import threading
 from flask import *
 app = Flask(__name__)
@@ -41,7 +42,7 @@ def _web_skip(gid):
     voice = discord.utils.get(client.voice_clients, guild=user.guild)
     if voice:
         if len(playqueue[user.guild.id])>0:
-                voice.stop()
+            voice.stop()
 
     return "OK"
 @app.route('/<gid>/loop', methods=["POST"])
@@ -114,16 +115,16 @@ threading.Thread(target = lambda: serve(app, host='0.0.0.0', port=443)).start()
 def getvoice(ctx):
     return discord.utils.get(client.voice_clients, guild=ctx.guild)
 async def has_ban(ctx):
-    if 'ban_role' in db[ctx.guild.id].keys():
+    if 'ban_role' in db[str(ctx.guild.id)].keys():
         for role in ctx.author.roles:
-            if role.id == int(db[ctx.guild.id]['ban_role']):
+            if role.id == int(db[str(ctx.guild.id)]['ban_role']):
                 await ctx.reply(":x: You don't have permissions to run this command :x:", hidden=True)
                 return True
     return False
 def ch_send(ctx):
-    if ctx.guild.id in db.keys():
-        if "musicch" in db[ctx.guild.id].keys():
-            channel= client.get_channel(db[ctx.guild.id]['musicch'])
+    if str(ctx.guild.id) in db.keys():
+        if "musicch" in db[str(ctx.guild.id)].keys():
+            channel= client.get_channel(db[str(ctx.guild.id)]['musicch'])
             return channel
     return ctx.message.channel
 async def is_admin(ctx):
@@ -279,14 +280,15 @@ async def skip(ctx, number_of_tracks):
             skip_embed.set_footer(text='Komenda wywołana przez: ' + ctx.author.name + '\n@Na licencji P4tkry',
                                   icon_url=str(author.avatar_url))
             await ch_send(ctx).send(embed=skip_embed)
-            if number_of_tracks != 1:
-                if loop_bool[ctx.guild.id]==False:
-                    del playqueue[ctx.guild.id][number_of_tracks-1]
-                else:
-                    first = playqueue[ctx.guild.id][number_of_tracks-1]
-                    playqueue[ctx.guild.id].append(first)
-                    del playqueue[ctx.guild.id][number_of_tracks-1]
-            voice.stop()
+        print(number_of_tracks)
+        if number_of_tracks != 1:
+            if loop_bool[ctx.guild.id]==False:
+                del playqueue[ctx.guild.id][number_of_tracks-1]
+            else:
+                first = playqueue[ctx.guild.id][number_of_tracks-1]
+                playqueue[ctx.guild.id].append(first)
+                del playqueue[ctx.guild.id][number_of_tracks-1]
+        voice.stop()
     else:
         await ctx.reply(":warning: Nie można wykonać tej komendy ponieważ winbot nie jest na żadnym kanale głosowym", hidden=True)
 
@@ -445,16 +447,16 @@ async def on_ready():
     for guild in client.guilds:
         playqueue[guild.id]=[]
         loop_bool[guild.id]=False
-        if not guild.id in db.keys():
-            db[guild.id]={}
+        if not str(guild.id) in db.keys():
+            db[str(guild.id)]={}
 
 @client.event
 async def on_guild_join(guild):
     print(guild)
     playqueue[guild.id] = []
     loop_bool[guild.id] = False
-    if not guild.id in db.keys():
-        db[guild.id] = {}
+    if not str(guild.id) in db.keys():
+        db[str(guild.id)] = {}
 
 
 
@@ -602,7 +604,7 @@ async def _set_winbot_channel(ctx: SlashContext, channel):
     if await has_ban(ctx) == False:
         if await is_admin(ctx) == True:
             if type(channel) == discord.TextChannel:
-                db[ctx.guild.id]['musicch'] = channel.id
+                db[str(ctx.guild.id)]['musicch'] = channel.id
 
                 await ctx.reply(f":wrench: **successfully** set channel {channel.mention} as informational for winbot.", hidden=True)
             else:
@@ -612,7 +614,7 @@ async def _set_winbot_channel(ctx: SlashContext, channel):
 async def _set_winbot_ban_role(ctx: SlashContext, role):
     if await has_ban(ctx) == False:
         if await is_admin(ctx) == True:
-            db[ctx.guild.id]['ban_role']=role.id
+            db[str(ctx.guild.id)]['ban_role']=role.id
             await ctx.reply(f":wrench: **successfully** set {role.mention} as a ban role for winbot.", hidden=True)
 
 # @client.event

@@ -309,6 +309,39 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "replit"
+version = "3.2.4"
+description = "A library for interacting with features of repl.it"
+category = "main"
+optional = false
+python-versions = ">=3.8,<4.0"
+
+[package.dependencies]
+aiohttp = ">=3.6.2,<4.0.0"
+Flask = ">=2.0.0,<3.0.0"
+requests = ">=2.25.1,<3.0.0"
+typing_extensions = ">=3.7.4,<4.0.0"
+Werkzeug = ">=2.0.0,<3.0.0"
+
+[[package]]
+name = "requests"
+version = "2.26.0"
+description = "Python HTTP for Humans."
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+
+[package.dependencies]
+certifi = ">=2017.4.17"
+charset-normalizer = {version = ">=2.0.0,<2.1.0", markers = "python_version >= \"3\""}
+idna = {version = ">=2.5,<4", markers = "python_version >= \"3\""}
+urllib3 = ">=1.21.1,<1.27"
+
+[package.extras]
+socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
+use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
+
+[[package]]
 name = "rfc3986"
 version = "1.5.0"
 description = "Validating URI References per RFC 3986"
@@ -340,11 +373,24 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "typing-extensions"
-version = "4.0.1"
-description = "Backported and Experimental Type Hints for Python 3.6+"
+version = "3.10.0.2"
+description = "Backported and Experimental Type Hints for Python 3.5+"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = "*"
+
+[[package]]
+name = "urllib3"
+version = "1.26.7"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+
+[package.extras]
+brotli = ["brotlipy (>=0.6.0)"]
+secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
+socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "waitress"
@@ -395,7 +441,7 @@ httpx = ">=0.14.2"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "18a8b54d778a53ddf3348171a09f55a429965bddddfabdb6dfc16342ea9ac7b3"
+content-hash = "c4b5118acb64d097a44807adc5f8ff52fc22bf111d87d6ce6b09088d9815c0d4"
 
 [metadata.files]
 aiohttp = [
@@ -738,6 +784,14 @@ pytube = [
     {file = "pytube-11.0.2-py3-none-any.whl", hash = "sha256:bf2b350e8e991f82b874928f5f1ba1a733a9848d650b01b08fabdf85eea15356"},
     {file = "pytube-11.0.2.tar.gz", hash = "sha256:21d2d151e6525f9f79401ae7a74a7de1e2bb1c00ede5d77c89e22d496389c5f1"},
 ]
+replit = [
+    {file = "replit-3.2.4-py3-none-any.whl", hash = "sha256:4fa5895e1e090ba23c179641bc88ab0486d1bea696515aa3147fce55733e29e1"},
+    {file = "replit-3.2.4.tar.gz", hash = "sha256:39c660d57c479d321f143a04d75d1297accf24fc91c0113f56d6a279b20e9427"},
+]
+requests = [
+    {file = "requests-2.26.0-py2.py3-none-any.whl", hash = "sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24"},
+    {file = "requests-2.26.0.tar.gz", hash = "sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"},
+]
 rfc3986 = [
     {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},
     {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
@@ -751,8 +805,13 @@ sniffio = [
     {file = "sniffio-1.2.0.tar.gz", hash = "sha256:c4666eecec1d3f50960c6bdf61ab7bc350648da6c126e3cf6898d8cd4ddcd3de"},
 ]
 typing-extensions = [
-    {file = "typing_extensions-4.0.1-py3-none-any.whl", hash = "sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b"},
-    {file = "typing_extensions-4.0.1.tar.gz", hash = "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e"},
+    {file = "typing_extensions-3.10.0.2-py2-none-any.whl", hash = "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7"},
+    {file = "typing_extensions-3.10.0.2-py3-none-any.whl", hash = "sha256:f1d25edafde516b146ecd0613dabcc61409817af4766fbbcfb8d1ad4ec441a34"},
+    {file = "typing_extensions-3.10.0.2.tar.gz", hash = "sha256:49f75d16ff11f1cd258e1b988ccff82a3ca5570217d7ad8c5f48205dd99a677e"},
+]
+urllib3 = [
+    {file = "urllib3-1.26.7-py2.py3-none-any.whl", hash = "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"},
+    {file = "urllib3-1.26.7.tar.gz", hash = "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece"},
 ]
 waitress = [
     {file = "waitress-2.0.0-py3-none-any.whl", hash = "sha256:29af5a53e9fb4e158f525367678b50053808ca6c21ba585754c77d790008c746"},
