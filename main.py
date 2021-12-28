@@ -274,9 +274,8 @@ async def skip(ctx, number_of_tracks):
             skip_embed = discord.Embed(title=":fast_forward:",
                                        description=pominieto,
                                        color=0xFf1919)
-            print(playqueue)
-			skip_embed.add_field(name="Kolejny utwór",
-			value="[" + str(playqueue[ctx.guild.id][number_of_tracks]['title']) + "](" + str(playqueue[number_of_tracks]['link']) + ")", inline=True)
+            skip_embed.add_field(name="Kolejny utwór",
+                                 value="[" + str(playqueue[ctx.guild.id][number_of_tracks]['title']) + "](" + str(playqueue[ctx.guild.id][number_of_tracks]['link']) + ")", inline=True)
             skip_embed.set_thumbnail(url=playqueue[ctx.guild.id][number_of_tracks]['thumbnails'][0]['url'])
             skip_embed.set_footer(text='Komenda wywołana przez: ' + ctx.author.name + '\n@Na licencji P4tkry',
                                   icon_url=str(author.avatar_url))
@@ -289,8 +288,6 @@ async def skip(ctx, number_of_tracks):
                     playqueue[ctx.guild.id].append(first)
                     del playqueue[ctx.guild.id][number_of_tracks-1]
             voice.stop()
-
-
     else:
         await ctx.reply(":warning: Nie można wykonać tej komendy ponieważ winbot nie jest na żadnym kanale głosowym", hidden=True)
 
@@ -636,8 +633,8 @@ async def _set_winbot_ban_role(ctx: SlashContext, role):
 #WEB SECTION
 
 
-client.run(os.environ['KEY'])
-
+# client.run(os.environ['KEY'])
+client.run("ODgyNzAyNjI1Mzc0NjAxMjI2.YS_O4Q.Q4CebSOo6BPwRSqdqw28i2MGFhI")
 
 
 
