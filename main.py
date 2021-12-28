@@ -159,8 +159,8 @@ async def add_queue(ctx, music):
             await ctx.reply(":bangbang: Nie odnaleziono danego utworu ", hidden=True)
             return
     music_data=video_found.result()['result'][0]
-    if len(playqueue[ctx.guild_id]) == 0:
-        playqueue[ctx.guild_id].append(music_data)
+    if len(playqueue[ctx.guild.id]) == 0:
+        playqueue[ctx.guild.id].append(music_data)
         musicinfo = discord.Embed(title=":musical_note:",
                                   description="Uruchamianie muzyki na kanale " + str(ctx.author.voice.channel),
                                   color=0xcc8400)
@@ -171,11 +171,11 @@ async def add_queue(ctx, music):
         await ch_send(ctx).send(embed=musicinfo)
         await gotochannel(ctx)
     else:
-        playqueue[ctx.guild_id].append(music_data)
+        playqueue[ctx.guild.id].append(music_data)
         musicinfo = discord.Embed(title=":arrow_heading_up: ", description="Dodano utwór do kolejki", color=0x0073cf)
         musicinfo.add_field(name="Nazwa utworu", value="["+str(music_data['title'])+"]("+str(music_data['link'])+")",
                             inline=False)
-        musicinfo.add_field(name="Numer w kolejce", value=str(len(playqueue[ctx.guild_id])),
+        musicinfo.add_field(name="Numer w kolejce", value=str(len(playqueue[ctx.guild.id])),
                             inline=False)
         musicinfo.set_thumbnail(url=music_data['thumbnails'][0]['url'])
         musicinfo.set_footer(text='Komenda wywołana przez: ' + ctx.author.name + '\n@Na licencji P4tkry',
@@ -188,9 +188,9 @@ async def gotochannel(ctx):
         await user_voice_channel.connect()
     play(ctx)
 def play(ctx):
-    if not len(playqueue[ctx.guild_id])==0:
+    if not len(playqueue[ctx.guild.id])==0:
         print("play")
-        ytmusic = YouTube(playqueue[ctx.guild_id][0]['link']).streams.filter(only_audio=True).first()
+        ytmusic = YouTube(playqueue[ctx.guild.id][0]['link']).streams.filter(only_audio=True).first()
         if not os.path.isfile("music/" + str(ytmusic.default_filename)):
             ytmusic.download(filedir+"/music")
         voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
@@ -201,17 +201,16 @@ def play(ctx):
                 pass
 def next(ctx):
     global playqueue
-    if not len(playqueue[ctx.guild_id])==0:
+    if not len(playqueue[ctx.guild.id])==0:
         if loop_bool[ctx.guild.id]==False:
-            del playqueue[ctx.guild_id][0]
+            del playqueue[ctx.guild.id][0]
         else:
-            first=playqueue[ctx.guild_id][0]
-            playqueue[ctx.guild_id].append(first)
-            del playqueue[ctx.guild_id][0]
-        print(playqueue[ctx.guild_id])
+            first=playqueue[ctx.guild.id][0]
+            playqueue[ctx.guild.id].append(first)
+            del playqueue[ctx.guild.id][0]
         play(ctx)
 async def get_queue(ctx):
-    voice =await getvoice(ctx)
+    voice =getvoice(ctx)
     is_paused=False
     if voice:
         is_paused=voice.is_paused()
@@ -228,7 +227,7 @@ async def get_queue(ctx):
     playlist_embed.set_footer(text='@Na licencji P4tkry',
                                   icon_url=str(author.avatar_url))
     number=0
-    for muzyka in playqueue[ctx.guild_id]:
+    for muzyka in playqueue[ctx.guild.id]:
         number=number+1
         playlist_embed.add_field(name=str(number), value=f"[```{str(muzyka['title'])}```]({str(muzyka['link'])})", inline=False)
 
@@ -258,7 +257,7 @@ async def skip(ctx, number_of_tracks):
 
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     if voice:
-        pozostalo = len(playqueue[ctx.guild_id]) - number_of_tracks
+        pozostalo = len(playqueue[ctx.guild.id]) - number_of_tracks
         if pozostalo < 0:
             await ctx.reply(":warning: Nie można pominąć więcej utworów niż jest na liście odtwarzania", hidden=True)
             return
@@ -275,19 +274,20 @@ async def skip(ctx, number_of_tracks):
             skip_embed = discord.Embed(title=":fast_forward:",
                                        description=pominieto,
                                        color=0xFf1919)
-            skip_embed.add_field(name="Kolejny utwór",
-                                 value="[" + str(playqueue[ctx.guild_id][number_of_tracks]['title']) + "](" + str(playqueue[number_of_tracks]['link']) + ")", inline=True)
-            skip_embed.set_thumbnail(url=playqueue[ctx.guild_id][number_of_tracks]['thumbnails'][0]['url'])
+            print(playqueue)
+			skip_embed.add_field(name="Kolejny utwór",
+			value="[" + str(playqueue[ctx.guild.id][number_of_tracks]['title']) + "](" + str(playqueue[number_of_tracks]['link']) + ")", inline=True)
+            skip_embed.set_thumbnail(url=playqueue[ctx.guild.id][number_of_tracks]['thumbnails'][0]['url'])
             skip_embed.set_footer(text='Komenda wywołana przez: ' + ctx.author.name + '\n@Na licencji P4tkry',
                                   icon_url=str(author.avatar_url))
             await ch_send(ctx).send(embed=skip_embed)
             if number_of_tracks != 1:
                 if loop_bool[ctx.guild.id]==False:
-                    del playqueue[ctx.guild_id][number_of_tracks-1]
+                    del playqueue[ctx.guild.id][number_of_tracks-1]
                 else:
-                    first = playqueue[ctx.guild_id][number_of_tracks-1]
-                    playqueue[ctx.guild_id].append(first)
-                    del playqueue[ctx.guild_id][number_of_tracks-1]
+                    first = playqueue[ctx.guild.id][number_of_tracks-1]
+                    playqueue[ctx.guild.id].append(first)
+                    del playqueue[ctx.guild.id][number_of_tracks-1]
             voice.stop()
 
 
