@@ -22,7 +22,6 @@ from youtubesearchpython import *
 import uuid
 import threading
 from flask import *
-db={}
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['FLASK_ENV']="development"
@@ -633,8 +632,6 @@ async def _set_winbot_ban_role(ctx: SlashContext, role):
 #WEB SECTION
 
 
-# client.run(os.environ['KEY'])
-client.run("ODgyNzAyNjI1Mzc0NjAxMjI2.YS_O4Q.Q4CebSOo6BPwRSqdqw28i2MGFhI")
-
+client.run(os.environ['KEY'])
 
 
